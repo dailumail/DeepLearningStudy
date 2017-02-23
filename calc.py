@@ -6,16 +6,24 @@ import operator
 
 def main(file):
 	content = ''
-	skipped_chars = ['', '\xef\xbc\x8c', '\xe3\x80\x82', '\xef\xbc\x9b', 
-		'\xe3\x80\x81', '\xe2\x80\x95', '\xef\xbc\x9a', '\xe2\x80\x9c', '\xe2\x80\x9d']
 	with open(file, 'r') as f:
 		content = f.read()
 	words = re.split(' |\n', content)
 	p = {}
-	for w in words:
-		if w in skipped_chars:
-			continue
+	w1 = 0
+	for w_utf8 in words:
+		w2 = w_utf8.decode("utf-8")
+		if (len(w2)) < 2:
+			w1 = 0
+			continue;
 			
+		if w1 == 0:
+			w1 = w2
+			continue
+
+		w = w1 + w2
+		w1 = w2
+		
 		if w in p:
 			p[w] = p[w] + 1
 		else:
